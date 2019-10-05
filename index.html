@@ -39,10 +39,16 @@
         <script src="https://unpkg.com/gaussian@1.1.0/lib/gaussian.js"></script>
         <script>
             const MEAN = 0;
-            const VARIANCE = 0.2;
+            const VARIANCE = 0.5;
             distribution = window.gaussian(MEAN, VARIANCE);
             window.normalDistribution = function(x) {
-                return distribution.pdf(x);
+                return distribution.pdf(x) * 1.5;
+            }
+
+            const X_AXIS_RANGE = 5;
+            // From a percentage between 0% - 100%, get the corresponding x-value for the bell curve, given the X Axis Range
+            window.getNormalizedX = function(xPercentage) {
+                return (xPercentage * X_AXIS_RANGE) - (X_AXIS_RANGE / 2);
             }
         </script>
         <script>
@@ -52,7 +58,7 @@
             ctx.moveTo(0, $canvas.clientHeight);
             for (let i  = 0; i < 100; i += 0.1) {
                 const xPosition = (i / 100) * $canvas.clientWidth;
-                const normalizedX = (i / 100) * 6 - 3;
+                const normalizedX = window.getNormalizedX(i / 100);
                 const yPercentage = window.normalDistribution(normalizedX);
                 const yPosition = $canvas.clientHeight - (yPercentage * $canvas.clientHeight);
                 ctx.lineTo(xPosition, yPosition);
@@ -77,9 +83,8 @@
 
                 const xPosition = Math.max(0, Math.min(e.clientX, $trackContainer.clientWidth - $trackButton.clientWidth));
 
-                const X_AXIS_RANGE = 6;
                 const xPercentage = xPosition / ($trackContainer.clientWidth - $trackButton.clientWidth);
-                const normalizedX = (xPercentage * X_AXIS_RANGE) - (X_AXIS_RANGE / 2);
+                const normalizedX = window.getNormalizedX(xPercentage);
                 const yPercentage = window.normalDistribution(normalizedX);
                 const yPosition = $trackContainer.clientHeight - ($trackContainer.clientHeight * yPercentage) - $trackButton.clientHeight;
 
