@@ -51,50 +51,7 @@
                 return (xPercentage * X_AXIS_RANGE) - (X_AXIS_RANGE / 2);
             }
         </script>
-        <script>
-            const $canvas = document.querySelector('.js-canvas');
-            const ctx = $canvas.getContext('2d');
-
-            ctx.moveTo(0, $canvas.clientHeight);
-            for (let i  = 0; i < 100; i += 0.1) {
-                const xPosition = (i / 100) * $canvas.clientWidth;
-                const normalizedX = window.getNormalizedX(i / 100);
-                const yPercentage = window.normalDistribution(normalizedX);
-                const yPosition = $canvas.clientHeight - (yPercentage * $canvas.clientHeight);
-                ctx.lineTo(xPosition, yPosition);
-            }
-
-            ctx.stroke();
-        </script>
-        <script>
-            const $trackContainer = document.querySelector('.js-track-container');
-            const $trackButton = document.querySelector('.js-track-button');
-
-            let isDragging = false;
-
-            $trackButton.addEventListener('mousedown', function() {
-                isDragging = true;
-            });
-
-            document.addEventListener('mousemove', function(e) {
-                if (!isDragging) {
-                    return;
-                }
-
-                const xPosition = Math.max(0, Math.min(e.clientX, $trackContainer.clientWidth - $trackButton.clientWidth));
-
-                const xPercentage = xPosition / ($trackContainer.clientWidth - $trackButton.clientWidth);
-                const normalizedX = window.getNormalizedX(xPercentage);
-                const yPercentage = window.normalDistribution(normalizedX);
-                const yPosition = $trackContainer.clientHeight - ($trackContainer.clientHeight * yPercentage) - $trackButton.clientHeight;
-
-                $trackButton.style.left = `${xPosition}px`;
-                $trackButton.style.top = `${yPosition}px`;
-            });
-
-            document.addEventListener('mouseup', function() {
-                isDragging = false;
-            });
-        </script>
+        <script src="./canvas.js"></script>
+        <script src="./app.js"></script>
     </body>
 </html>
