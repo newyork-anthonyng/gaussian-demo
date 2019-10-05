@@ -32,11 +32,9 @@
     </style>
     <body>
         <div class="track__container js-track-container">
+            <canvas height="125" width="500" class="js-canvas"></canvas>
             <div class="track__button js-track-button"></div>
         </div>
-        <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
         
         <script src="https://unpkg.com/gaussian@1.1.0/lib/gaussian.js"></script>
         <script>
@@ -46,6 +44,21 @@
             window.normalDistribution = function(x) {
                 return distribution.pdf(x);
             }
+        </script>
+        <script>
+            const $canvas = document.querySelector('.js-canvas');
+            const ctx = $canvas.getContext('2d');
+
+            ctx.moveTo(0, $canvas.clientHeight);
+            for (let i  = 0; i < 100; i += 0.1) {
+                const xPosition = (i / 100) * $canvas.clientWidth;
+                const normalizedX = (i / 100) * 6 - 3;
+                const yPercentage = window.normalDistribution(normalizedX);
+                const yPosition = $canvas.clientHeight - (yPercentage * $canvas.clientHeight);
+                ctx.lineTo(xPosition, yPosition);
+            }
+
+            ctx.stroke();
         </script>
         <script>
             const $trackContainer = document.querySelector('.js-track-container');
