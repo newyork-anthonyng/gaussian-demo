@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <style>
+        .track__button {
+            height: 10px;
+            width: 10px;
+            border-radius: 50%;
+            background-color: tomato;
+            border: 1px solid black;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+
+        .track__container {
+            border: 1px solid black;
+            height: 125px;
+            width: 500px;
+            position: relative;
+        }
+    </style>
+    <body>
+        <div class="track__container js-track-container">
+            <div class="track__button js-track-button"></div>
+        </div>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        
+        <script src="https://unpkg.com/gaussian@1.1.0/lib/gaussian.js"></script>
+        <script>
+            const MEAN = 0;
+            const VARIANCE = 0.2;
+            distribution = window.gaussian(MEAN, VARIANCE);
+            window.normalDistribution = function(x) {
+                return distribution.pdf(x);
+            }
+        </script>
+        <script>
+            const $trackContainer = document.querySelector('.js-track-container');
+            const $trackButton = document.querySelector('.js-track-button');
+
+            let isDragging = false;
+
+            $trackButton.addEventListener('mousedown', function() {
+                isDragging = true;
+            });
+
+            document.addEventListener('mousemove', function(e) {
+                if (!isDragging) {
+                    return;
+                }
+
+                const xPosition = Math.max(0, Math.min(e.clientX, $trackContainer.clientWidth - $trackButton.clientWidth));
+
+                const X_AXIS_RANGE = 6;
+                const xPercentage = xPosition / ($trackContainer.clientWidth - $trackButton.clientWidth);
+                const normalizedX = (xPercentage * X_AXIS_RANGE) - (X_AXIS_RANGE / 2);
+                const yPercentage = window.normalDistribution(normalizedX);
+                const yPosition = $trackContainer.clientHeight - ($trackContainer.clientHeight * yPercentage) - $trackButton.clientHeight;
+
+                $trackButton.style.left = `${xPosition}px`;
+                $trackButton.style.top = `${yPosition}px`;
+            });
+
+            document.addEventListener('mouseup', function() {
+                isDragging = false;
+            });
+        </script>
+    </body>
+</html>
